@@ -1,0 +1,35 @@
+.login-block {
+    display: block;
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    background-color: white;
+    padding:1em 2em;
+    border-radius: 8px;
+    border:1px solid var(--main-gray);
+    width: clamp(100px, 30%,400px);
+}
+
+.login-block form {
+    font-size: 1em;
+}
+
+.login-block form .form-group {
+    display: flex;
+    flex-direction: column;
+    margin:1em 0;
+}
+
+.login-block form .form-group label {
+    margin-bottom: 0.2em;
+}
+
+.login-block form .buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.login-block form .buttons button {
+    margin:0 0.2em;
+}

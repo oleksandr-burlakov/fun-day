@@ -1,0 +1,16 @@
+.central-info {
+    background-color: white;
+    padding:2em;
+}
+
+.main-title {
+    text-transform: uppercase;   
+    font-size: 3em;
+    text-align: center;
+    color:var(--primary-color);
+}
+
+.cards {
+    display: flex;
+    justify-content: center;
+}

@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunDay.WebAPI", "FunDay.WebAPI\FunDay.WebAPI.csproj", "{220A8154-6B30-4132-B862-ED4164ECE1F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunDay.WebAPI", "FunDay.WebAPI\FunDay.WebAPI.csproj", "{220A8154-6B30-4132-B862-ED4164ECE1F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunDay.Persistance", "FunDay.Persistance\FunDay.Persistance.csproj", "{343718A1-4621-4B76-9980-A70010D52C01}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunDay.BLL", "FunDay.BLL\FunDay.BLL.csproj", "{21BB0408-5D42-4B3E-80C0-A5C04A71DB83}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{220A8154-6B30-4132-B862-ED4164ECE1F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{220A8154-6B30-4132-B862-ED4164ECE1F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{220A8154-6B30-4132-B862-ED4164ECE1F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{343718A1-4621-4B76-9980-A70010D52C01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{343718A1-4621-4B76-9980-A70010D52C01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{343718A1-4621-4B76-9980-A70010D52C01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{343718A1-4621-4B76-9980-A70010D52C01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21BB0408-5D42-4B3E-80C0-A5C04A71DB83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21BB0408-5D42-4B3E-80C0-A5C04A71DB83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21BB0408-5D42-4B3E-80C0-A5C04A71DB83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21BB0408-5D42-4B3E-80C0-A5C04A71DB83}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

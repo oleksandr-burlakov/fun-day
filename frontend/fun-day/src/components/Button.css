@@ -1,0 +1,30 @@
+button {
+    padding:0.4em 0.6em;
+    border-radius: 6px;
+    transition: 0.1s ease-out;
+    width:100%;
+}
+
+button:not(:disabled) {
+    cursor: pointer;
+}
+
+button.default {
+    background-color: var(--primary-color);
+    color:var(--main-white);
+    border:1px solid var(--secondary-color);
+}
+
+button.default:hover {
+    background-color: var(--secondary-color);
+}
+
+button.outline {
+    background-color: transparent;
+    border: 1px solid var(--primary-color);
+}
+
+button.outline:hover {
+    background-color: var(--primary-color);
+    color:var(--main-white);
+}
