@@ -2,10 +2,10 @@ import {
     createBrowserRouter,
 
 } from "react-router-dom";
-import { Login } from "./pages/authentication/Login";
-import { Registration } from "./pages/authentication/Registration";
-import { BaseLayout } from "./pages/BaseLayout";
-import { Home } from "./pages/home/Home";
+import { Login } from "../pages/authentication/Login";
+import { Registration } from "../pages/authentication/Registration";
+import { BaseLayout } from "../pages/BaseLayout";
+import { Home } from "../pages/home/Home";
 
 export const funDayRouter = createBrowserRouter([
     {
@@ -14,6 +14,7 @@ export const funDayRouter = createBrowserRouter([
         children: [
             {
                 path: '',
+                
                 element: <Home />
             },
             {

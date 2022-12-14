@@ -12,3 +12,21 @@ input.default {
     border:1px solid transparent;
     color: var(--main-white);
 }
+
+input.search {
+    border-radius: 6px 0 0px 6px;
+    border-right: transparent;
+}
+
+.searchButton {
+    background-color: var(--main-white);
+    width:40px;
+    border:1px solid var(--primary-color);
+    border-left: 1px solid var(--primary-color);
+    border-radius: 0 6px 6px 0;
+}
+
+.searchButton:hover {
+    background-color: var(--primary-color);
+    color:var(--main-white);
+}

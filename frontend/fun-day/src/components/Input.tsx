@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ChangeEventHandler } from "react";
 import "./Input.css";
 
 export interface InputProps {
@@ -6,6 +6,10 @@ export interface InputProps {
     chosenClass?: string;
     id?: string;
     name?: string;
+    placeholder?: string;
+    isSearchInput?: boolean;
+    onChange?: ChangeEventHandler<HTMLInputElement>;
+    value?: string | number | readonly string[] | undefined;
 };
 
 export class Input extends React.Component<InputProps> {
@@ -25,6 +29,10 @@ export class Input extends React.Component<InputProps> {
     chosenClass: string;
     id?: string;
     name?: string;
+    placeholder?: string;
+    isSearchInput: boolean = false;
+    value: string | number | readonly string[] | undefined;
+    onChange?: ChangeEventHandler<HTMLInputElement>;
 
     public constructor(props: InputProps) {
         super(props);
@@ -43,6 +51,15 @@ export class Input extends React.Component<InputProps> {
 
         this.id = props.id;
         this.name = props.name;
+        this.placeholder = props.placeholder;
+
+        if (props.isSearchInput) {
+            this.isSearchInput = props.isSearchInput;
+        }
+        this.onChange = props.onChange;
+        if (props.value) {
+            this.value = props.value;
+        }
     }
 
     render(): React.ReactNode {
@@ -51,10 +68,17 @@ export class Input extends React.Component<InputProps> {
             <>
                 <input 
                     type={this.type} 
-                    className={this.chosenClass} 
+                    className={this.chosenClass + (this.isSearchInput ? " search": "")} 
                     name={this.name}
                     id={this.id}
+                    placeholder={this.placeholder}
+                    onChange={this.onChange}
+                    value={this.value}
                     />
+                {this.isSearchInput && 
+                    <button className="searchButton">
+                        Q
+                    </button>}
             </>
         );
     }

@@ -5,6 +5,7 @@ export interface ButtonProps {
     text: string;
     chosenClass?: string;
     onClick?: MouseEventHandler | undefined;
+    type?: "submit" | "button" | "reset";
 };
 
 export class Button extends React.Component<ButtonProps> {
@@ -12,9 +13,10 @@ export class Button extends React.Component<ButtonProps> {
         'default',
         'outline'
     ];
-    
+
     text: string;
     chosenClass: string;
+    type: "submit" | "button" | "reset" = "submit";
     onClickCallback: MouseEventHandler | undefined;
 
     public constructor(props: ButtonProps) {
@@ -30,6 +32,9 @@ export class Button extends React.Component<ButtonProps> {
         if (props.onClick) {
             this.onClickCallback = props.onClick;
         }
+        if (props.type) {
+            this.type = props.type;
+        }
     }
 
     render(): React.ReactNode {
@@ -38,6 +43,7 @@ export class Button extends React.Component<ButtonProps> {
                 <button 
                     onClick={this.onClickCallback}
                     className={this.chosenClass}
+                    type={this.type}
                     >
                     { this.text }
                 </button>

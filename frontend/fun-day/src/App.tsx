@@ -1,25 +1,33 @@
 import React from 'react';
-import logo from './logo.svg';
+import { Routes, Route } from 'react-router-dom';
 import './App.css';
+import { setAuthToken } from './helpers/setAuthToken';
+import { useAuthentication } from './hooks/useAuth';
+import { Login } from './pages/authentication/Login';
+import { Registration } from './pages/authentication/Registration';
+import { BaseLayout } from './pages/BaseLayout';
+import { List } from './pages/events/List';
+import { Home } from './pages/home/Home';
+import { AuthLayout } from './routes/AuthLayout';
 
 function App() {
+  const { isAuthorized } = useAuthentication();
+  
+  if (isAuthorized) {
+    const token = localStorage.getItem("token");
+    setAuthToken(token);
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/" element={<BaseLayout/>}>
+        <Route path="" element={<Home/>} />
+        <Route path="events" element={<AuthLayout/>}>
+          <Route path="" element={<List/>}/>
+        </Route>
+        <Route path="login" element={<Login/>}/>
+        <Route path="registration" element={<Registration/>}/>
+      </Route>
+    </Routes>
   );
 }
 
