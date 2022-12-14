@@ -1,8 +1,9 @@
 ﻿using FunDay.BLL.DTO.Users;
 using FunDay.BLL.Helpers;
 using FunDay.BLL.Interfaces;
+using FunDay.Common.Globals;
 using FunDay.WebAPI.Models;
-using Microsoft.AspNetCore.Authorization;
+using FunDay.WebAPI.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +16,6 @@ using System.Text;
 namespace FunDay.WebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [AllowAnonymous]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -27,6 +27,7 @@ namespace FunDay.WebAPI.Controllers
             _configuration = configuration;
         }
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginModel loginModel)
         {
             var user = await _userService.FindByLogin(loginModel.Login);
@@ -48,33 +49,34 @@ namespace FunDay.WebAPI.Controllers
                 return BadRequest("Password is wrong");
             }
 
-            var issuer = _configuration.GetSection("Jwt").GetValue<string>("Issuer");
-            var audience = _configuration.GetSection("Jwt").GetValue<string>("Audience");
-            var key = Encoding.ASCII.GetBytes(_configuration.GetSection("Jwt").GetValue<string>("Key"));
-            var tokenDescriptor = new SecurityTokenDescriptor
+            var newAccessToken = CreateToken(new List<Claim>()
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim("Id", Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                    new Claim("FullName", user.FullName),
-                    new Claim("Role", "User"),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-                }),
-                Expires = DateTime.UtcNow.AddMinutes(5),
-                Issuer = issuer,
-                Audience = audience,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha512Signature)
-            };
+                new Claim("Id", user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Name, user.Email),
+                new Claim("FullName", user.FullName),
+                new Claim(ClaimTypes.Role, user.Role),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            });
+            var newRefreshToken = GenerateRefreshToken();
+            _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
+            user.RefreshToken = newRefreshToken;
+            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(refreshTokenValidityInDays);
+            await _userService.UpdateAsync(user);
+
             var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var jwtToken = tokenHandler.WriteToken(token);
-            var stringToken = tokenHandler.WriteToken(token);
-            return Ok(stringToken);
+            var token = tokenHandler.WriteToken(newAccessToken);
+            return Ok(new
+            {
+                Token = token,
+                RefreshToken = newRefreshToken,
+                Expiration = newAccessToken.ValidTo
+            });
         }
 
         [HttpPost("registration")]
+        [AllowAnonymous]
         public async Task<IActionResult> Registration(RegistrationModel registrationModel)
         {
             var isEmailValid = ValidationHelper.IsValidEmail(registrationModel.Email);
@@ -100,6 +102,110 @@ namespace FunDay.WebAPI.Controllers
                 HashedPassword = hashed
             });
             return Ok();
+        }
+
+        [HttpPost("refresh-token")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RefreshToken(TokenModel model)
+        {
+            if (model is null)
+            {
+                return BadRequest("Invalid client request. Token is null");
+            }
+
+            string? accessToken = model.AccessToken;
+            string? refreshToken = model.RefreshToken;
+
+            var principal = GetPrincipalFromExpiredToken(accessToken);
+            if (principal == null)
+            {
+                return BadRequest("Invalid access token or refresh token. Can not get token principal information");
+            }
+
+            string username = principal.Identity.Name;
+
+            var user = await _userService.FindByLogin(username);
+
+            if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+            {
+                return BadRequest("Invalid access token or refresh token. User not found");
+            }
+
+            var newAccessToken = CreateToken(principal.Claims.ToList());
+            var newRefreshToken = GenerateRefreshToken();
+
+            user.RefreshToken = newRefreshToken;
+            await _userService.UpdateAsync(user);
+
+            return new ObjectResult(new
+            {
+                accessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
+                refreshToken = newRefreshToken
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("revoke/{username}")]
+        public async Task<IActionResult> Revoke(string username)
+        {
+            var user = await _userService.FindByLogin(username);
+            if (user == null) return BadRequest("Invalid user name");
+
+            user.RefreshToken = null;
+            await _userService.UpdateAsync(user);
+
+            return NoContent();
+        }
+
+        [Authorize(UserRoles.Admin)]
+        [HttpGet("isAdmin")]
+        public async Task<IActionResult> IsAdmin()
+        {
+            return Ok("Admin");
+        }
+
+        private JwtSecurityToken CreateToken(List<Claim> authClaims)
+        {
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
+            _ = int.TryParse(_configuration["JWT:TokenValidityInMinutes"], out int tokenValidityInMinutes);
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JWT:Issuer"],
+                audience: _configuration["JWT:Audience"],
+                expires: DateTime.Now.AddMinutes(tokenValidityInMinutes),
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                );
+
+            return token;
+        }
+
+        private static string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[64];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
+        }
+
+        private ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = true,
+                ValidateIssuer = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"])),
+                ValidateLifetime = true
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+            if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                throw new SecurityTokenException("Invalid token");
+
+            return principal;
         }
     }
 }

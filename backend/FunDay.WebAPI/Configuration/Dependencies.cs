@@ -1,6 +1,7 @@
 ﻿using FunDay.BLL.Interfaces;
 using FunDay.Persistance.Realization;
 using Microsoft.EntityFrameworkCore;
+using WebApi.Authorization;
 
 namespace FunDay.WebAPI.Configuration
 {
@@ -11,6 +12,7 @@ namespace FunDay.WebAPI.Configuration
             services.AddDbContext<FunDayContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("FunDayContext")));
             AddServices(services);
+            services.AddTransient<IJwtUtils,JwtUtils>();
         }
         public static void AddServices(this IServiceCollection services)
         {

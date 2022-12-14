@@ -12,5 +12,7 @@ namespace FunDay.BLL.Interfaces
     {
         public Task<User?> FindByLogin(string login);
         public Task Create(CreateDTO dto);
+        public Task UpdateAsync(User user);
+        public Task<User?> GetByIdAsync(Guid id);
     }
 }

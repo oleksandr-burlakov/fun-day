@@ -6,9 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\FunDay.Common\FunDay.Common.csproj" />
-    <ProjectReference Include="..\FunDay.Persistance\FunDay.Persistance.csproj" />
-  </ItemGroup>
-
 </Project>

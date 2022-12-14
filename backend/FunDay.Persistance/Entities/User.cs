@@ -16,5 +16,8 @@
         public string Email { get; set; }
         public byte[] Salt { get; set; }
         public ICollection<Ticket> Tickets { get; set; }
+        public string? RefreshToken { get; set; }
+        public string Role { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
     }
 }
