@@ -10,10 +10,11 @@
 .search-bar-component .sort-by {
     display: flex;
     justify-content: space-between;
+    min-width: 15%;
 }
 
 .search-bar-component .sort-by .category {
-    
+    width: 100%;
 }
 
 .search-bar-component .sort-by .order {
@@ -22,4 +23,5 @@
 }
 
 .search-bar-component .search-input {
+    
 }

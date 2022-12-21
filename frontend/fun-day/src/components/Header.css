@@ -23,6 +23,10 @@ header > .links > ul {
     list-style: none;
 }
 
+header > .links > ul > li {
+    color:var(--main-white);
+}
+
 header > .links > ul > li > a {
     padding:1.2em;
     font-size:1.1em;

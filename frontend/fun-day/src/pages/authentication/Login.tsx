@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./Login.css";
-import { Input } from "../../components/Input";
-import { Button } from "../../components/Button";
+import { TextField, Button } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import { useAuthentication } from "../../hooks/useAuth";
 import { LoginModel } from "../../models/authentication/loginModel";
@@ -40,22 +39,23 @@ export const Login = () => {
         <div className="login-block">
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label htmlFor="login">Login:</label>
-                    <input type="text" name="login" id="login" className="outline" onChange={handleChange} value={loginFormData.login} />
+                    <TextField label="Login" type="text" name="login" id="login" variant="standard" onChange={handleChange} value={loginFormData.login} />
                     <div className="validation-message"></div>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="password">Password:</label>
-                    <input type="password" id="password" name="password" className="default" onChange={handleChange} value={loginFormData.password} />
+                    <TextField label="Password" type="password" id="password" name="password" variant="standard" onChange={handleChange} value={loginFormData.password} />
                     <div className="validation-message"></div>
                 </div>
                 <div className="buttons">
-                    <Button text="Sign in" 
-                        chosenClass="default" />
-                    <Button text="Sign up" 
-                        chosenClass="outline"
+                    <Button variant="contained" type="submit">
+                        Sign in
+                    </Button>
+                    <Button 
                         onClick={() => navigate('/registration')}
-                            />
+                        variant="outlined"
+                    >
+                        Sign up
+                    </Button>
                 </div>
             </form>
         </div>

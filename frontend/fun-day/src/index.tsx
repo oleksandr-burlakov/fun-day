@@ -5,6 +5,18 @@ import { BrowserRouter } from "react-router-dom";
 import App from './App';
 import { RecoilRoot } from 'recoil';
 import axios from 'axios';
+import {createTheme, ThemeProvider} from '@mui/material/styles';
+
+export const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#ff743a',
+    },
+    secondary: {
+      main: '#ba5428',
+    },
+  },
+});
 
 axios.defaults.baseURL = "https://localhost:7176/api/";
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -27,15 +39,18 @@ axios.interceptors.response.use(response => {
   return Promise.reject(error);
 });
 
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <RecoilRoot>
-      <BrowserRouter>
-        <App/>
-      </BrowserRouter>
-    </RecoilRoot>
+    <ThemeProvider theme={theme}>
+      <RecoilRoot>
+        <BrowserRouter>
+          <App/>
+        </BrowserRouter>
+      </RecoilRoot>
+    </ThemeProvider>
   </React.StrictMode>
 );

@@ -1,8 +1,8 @@
 import './Registration.css';
 import React, { useState } from 'react';
-import { Button } from '../../components/Button';
 import { useAuthentication } from '../../hooks/useAuth';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { Button, TextField } from '@mui/material';
 
 export const Registration = () => {
     
@@ -48,46 +48,56 @@ export const Registration = () => {
         </div>
         <form onSubmit={handleRegister}>
             <div className='form-group'>
-                <label htmlFor="first-name">First name:</label>
-                <input type="text" 
-                    name="firstName" 
+                <TextField
+                    name="firstName"
+                    label="First name:"
                     id="firstName" 
-                    className="outline"
+                    variant="standard"
                     onChange={handleInputChange}
                     value={registrationData.firstName}
                     />
                 <div className="validation-message"></div>
             </div>
             <div className='form-group'>
-                <label htmlFor="last-name">Last name:</label>
-                <input type="text" name="lastName" id="lastName" 
-                    className="outline"
+                <TextField 
+                    type="text" 
+                    name="lastName" 
+                    id="lastName"
+                    label="Last name:" 
+                    variant='standard'
                     onChange={handleInputChange}
                     value={registrationData.lastName}
                     />
                 <div className="validation-message"></div>
             </div>
             <div className="form-group">
-                <label htmlFor="email">Email:</label>
-                <input type="email" name="email" id="email" 
-                    className="outline"
+                <TextField 
+                    label="Email:"
+                    type="email" 
+                    name="email" 
+                    id="email"  
+                    variant='standard'
                     onChange={handleInputChange}
                     value={registrationData.email}
                     />
                 <div className="validation-message"></div>
             </div>
             <div className="form-group">
-                <label htmlFor="password">Password:</label>
-                <input type="password" name="password" id="password" 
-                    className="outline"
+                <TextField 
+                    type="password" 
+                    name="password" 
+                    id="password" 
+                    variant="standard"
+                    label="Password:"
                     onChange={handleInputChange}
                     value={registrationData.password}
                     />
                 <div className="validation-message"></div>
             </div>
             <div className='buttons'>
-                <Button text='Sign up' 
-                    chosenClass='default'/>
+                <Button variant='contained' type='submit'>
+                    Sign up
+                </Button>
             </div>
         </form>
         </div>  

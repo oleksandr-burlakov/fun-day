@@ -9,6 +9,7 @@ import { BaseLayout } from './pages/BaseLayout';
 import { List } from './pages/events/List';
 import { Home } from './pages/home/Home';
 import { AuthLayout } from './routes/AuthLayout';
+import { AddNewEvent } from './pages/events/AddNewEvent';
 
 function App() {
   const { isAuthorized } = useAuthentication();
@@ -23,6 +24,7 @@ function App() {
         <Route path="" element={<Home/>} />
         <Route path="events" element={<AuthLayout/>}>
           <Route path="" element={<List/>}/>
+          <Route path="new" element={<AddNewEvent/>} />
         </Route>
         <Route path="login" element={<Login/>}/>
         <Route path="registration" element={<Registration/>}/>

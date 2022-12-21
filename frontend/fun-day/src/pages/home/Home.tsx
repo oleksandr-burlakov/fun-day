@@ -15,6 +15,18 @@ export class Home extends React.Component {
         {
             title: "Access",
             text: "Find event that accessable to you"
+        },
+        {
+            title: "Friends",
+            text: "Do you remember when you meet your friend last time?"
+        },
+        {
+            title: "Love",
+            text: "You don't know where your love is ;)"
+        },
+        {
+            title: "Food",
+            text: "Maybe, you want to try different food?"
         }
     ];
 
