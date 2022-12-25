@@ -26,6 +26,9 @@ function App() {
           <Route path="" element={<List/>}/>
           <Route path="new" element={<AddNewEvent/>} />
         </Route>
+        <Route path="places" element={<AuthLayout/>}>
+          
+        </Route>
         <Route path="login" element={<Login/>}/>
         <Route path="registration" element={<Registration/>}/>
       </Route>
